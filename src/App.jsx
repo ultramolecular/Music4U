@@ -6,14 +6,15 @@ import EventDisplay from './components/EventDisplay'
 import './App.css'
 
 function App() {
-    const [events, setEvents] = useState([]);
+    // const [events, setEvents] = useState([]);
+    const dummyEvents = [];
 
     // Event handlers
-    const handleSearch = (query) => {
+    // const handleSearch = (query) => {
         // TODO: Implement search functionality using Ticketmaster APi
-        console.log('Search for:', query);
+        // console.log('Search for:', query);
         // Example: setEvents(searchedEvents);
-    }
+    // }
 
     // ... Other event handlers for buttons
 
@@ -21,12 +22,12 @@ function App() {
         <>
             <Header />
             <Buttons
-                onFeaturedClick={/* .. */}
-                onJustAnnouncedClick={/* .. */}
-                onThisWeekendClick={/* .. */}
+                onFeaturedClick={() => console.log('Featured events clicked')}
+                onJustAnnouncedClick={() => console.log('Just announced events clicked')}
+                onThisWeekendClick={() => console.log('This weekend events clicked')}
             />
-            <SearchInput onSearch={handleSearch}/>
-            <EventDisplay events={events}/>
+            <SearchInput onSearch={(value) => console.log('Search', value)}/>
+            <EventDisplay events={dummyEvents}/>
             {/* Other components will follow here */}
         </>
     );
