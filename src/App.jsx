@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import Header from './components/Header'
 import Buttons from './components/Button'
 import SearchInput from './components/SearchInput'
@@ -6,8 +7,8 @@ import EventDisplay from './components/EventDisplay'
 import './App.css'
 
 function App() {
-    // const [events, setEvents] = useState([]);
-    const dummyEvents = [];
+    const [events, setEvents] = useState([]);
+    // const dummyEvents = [];
 
     // Event handlers
     // const handleSearch = (query) => {
@@ -18,6 +19,18 @@ function App() {
 
     // ... Other event handlers for buttons
 
+    // TODO: Test API call from here; figure out how to store API keys and secrets using .env
+    useEffect(() =>  {
+        axios.get('https://app.ticketmaster.com/discovery/v2/events.json?classificationName=music&dmaId=222&apikey=[APIKEYHERE]')
+        .then(response => {
+            setEvents(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, []);
+
+    // TODO: Implement button api logic
     return (
         <>
             <Header />
@@ -27,7 +40,7 @@ function App() {
                 onThisWeekendClick={() => console.log('This weekend events clicked')}
             />
             <SearchInput onSearch={(value) => console.log('Search', value)}/>
-            <EventDisplay events={dummyEvents}/>
+            <EventDisplay events={events}/>
             {/* Other components will follow here */}
         </>
     );
