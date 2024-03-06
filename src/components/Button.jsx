@@ -4,7 +4,7 @@
 
 const Button = ({ onFeaturedClick, onJustAnnouncedClick, onThisWeekendClick }) => {
     return (
-        <div className="buttons-container">
+        <div className="button-container">
             {/* TODO: the onClick funcs are just placeholders for now, will have to figure it out later */}
             <button className="button" onClick={onFeaturedClick}>Featured Events</button>
             <button className="button" onClick={onJustAnnouncedClick}>Just Announced</button>
