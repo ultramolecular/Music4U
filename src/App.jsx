@@ -4,7 +4,7 @@ import Header from './components/Header'
 import Buttons from './components/Button'
 import SearchInput from './components/SearchInput'
 import EventDisplay from './components/EventDisplay'
-import loadingImg from './assets/loading.svg'
+import LoadingImg from './assets/loading.svg?react'
 import './App.css'
 
 function App() {
@@ -42,7 +42,7 @@ function App() {
             />
             <SearchInput onSearch={(value) => console.log('Search', value)}/>
             <EventDisplay events={events}/>
-            {/* <img src={loadingImg} className="spin2" alt="loading swirl icon" /> */}
+
             {/* Other components will follow here */}
         </>
     );

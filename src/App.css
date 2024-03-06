@@ -1,74 +1,74 @@
 /* Root container */
 #root {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: 0 auto;
 }
 
 /* Header stylings */
 .header {
-  text-align: center;
-  font-size: 48px;
-  font-weight: bold;
-  margin: 20px 0;
-  color: #9933FF;
+    text-align: center;
+    font-size: 48px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #9933FF;
 }
 
 .header .four {
-  color: #3396FF;
+    color: #3396FF;
 }
 
 /* Button stylings */
 .button {
-  background-color: #9933FF;
-  border: none;
-  border-radius: 20px;
-  color: white;
-  padding: 10px 20px;
-  margin: 0 10px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
+    background-color: #9933FF;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
 }
 
 .button:hover {
-  background-color: #7A29CC;
+    background-color: #7A29CC;
 }
 
 .button-container {
-  text-align: center;
-  margin: 20px 0;
+    text-align: center;
+    margin: 20px 0;
 }
 
 /* Search input stlying */
 .search-input {
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  margin-right: 5px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    margin-right: 5px;
 }
 
 /* Event display styling */
 .event-display-container {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .event-card {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 20px;
-  margin: 10px 0;
-  transition: box-shadow 0.3s;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px 0;
+    transition: box-shadow 0.3s;
 }
 
 .event-card:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Loading Icon styling */
