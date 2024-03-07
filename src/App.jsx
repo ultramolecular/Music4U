@@ -27,13 +27,6 @@ function App() {
         try {
             const resp = await axios.get(eventsURI, { params });
 
-            /** 
-             * Artists are in: data._embedded.events._embedded.attractions
-             * Genres are in: data._embedded.events._embedded.attractions.classifications.genre.name
-             * Date is in: data._embedded.events.dates.start.localDate,
-             *             data._embedded.events.dates.start.localTime
-             * Venues are in: data._embedded.events._embedded.venues.name
-             */
             setEvents(resp.data._embedded.events);
         }
         catch (error) {
@@ -50,7 +43,8 @@ function App() {
             params: {
                 dmaId: 222,
                 classificationName: "music",
-                size: 1
+                size: 10,
+                apikey: apiKey
             }
         });
     };
@@ -58,7 +52,8 @@ function App() {
     const fetchJustAnnounced = async () => {
         await fetchEvents({
             params: {
-                classificationName: "music"
+                classificationName: "music",
+                apikey: apiKey
             }
         });
     }
@@ -66,7 +61,8 @@ function App() {
     const fetchThisWeekend = async () => {
         await fetchEvents({
             params: {
-                classificationName: "music"
+                classificationName: "music",
+                apikey: apiKey
             }
         });
     }
@@ -84,6 +80,7 @@ function App() {
                         buttonText={'This Weekend'} />
             </div>
 
+            {/* NOTE: search is just fetchFeaturedEvents with a specific dma */}
             <SearchInput onSearch={(value) => console.log('Search', value)} />
 
             <EventDisplay events={events} />

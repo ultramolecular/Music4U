@@ -55,20 +55,52 @@
 
 /* Event display styling */
 .event-display-container {
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fix, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    margin: 1rem auto;
+    max-width: 1200px;
 }
 
 .event-card {
     background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px 0;
-    transition: box-shadow 0.3s;
+    border-left: 5px solid #9933FF;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    transition: transform 0.2s;
 }
 
 .event-card:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px); /* Slight tilt on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhance shadow on hover */
+}
+
+.event-card h3 {
+    color: #9933FF;
+    margin-bottom: 0.5rem;
+}
+
+.event-card p {
+    color: #9933FF;
+    margin-bottom: 0.5rem;
+}
+
+.event-card a {
+    color: #3396FF;
+    text-decoration: none;
+}
+
+.event-card a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    /* Full-width cards on small screens */
+    .event-display-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Loading Icon styling */
