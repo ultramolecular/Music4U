@@ -9,7 +9,7 @@ import './App.css'
 
 function App() {
     const [events, setEvents] = useState([]);
-    // const dummyEvents = [];
+    const apiKey = import.meta.env.VITE_API_KEY;
 
     // Event handlers
     // const handleSearch = (query) => {
@@ -22,7 +22,7 @@ function App() {
 
     // TODO: Test API call from here; figure out how to store API keys and secrets using .env
     useEffect(() =>  {
-        axios.get('https://app.ticketmaster.com/discovery/v2/events.json?classificationName=music&dmaId=222&apikey=[APIKEYHERE]')
+        axios.get(`https://app.ticketmaster.com/discovery/v2/events.json?classificationName=music&dmaId=222&size=1&apikey=${apiKey}`)
         .then(response => {
             setEvents(response.data);
         })
