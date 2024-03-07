@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import Header from './components/Header'
-import Buttons from './components/Button'
+import Button from './components/Button'
 import SearchInput from './components/SearchInput'
 import EventDisplay from './components/EventDisplay'
 import LoadingImg from './assets/loading.svg?react'
@@ -14,22 +14,26 @@ function App() {
     const apiKey = import.meta.env.VITE_API_KEY;
     const eventsURI = "https://app.ticketmaster.com/discovery/v2/events.json";
 
-
-    const fetchEvents = async ({ params = {}} = {}) => {
-        /** 
-         * TODO: this will be the main fetch function that takes in query
-         * parameters as arguments to tailor the request.
-         */
+    /** 
+     * This will be the main fetch function that takes in query
+     * parameters as arguments to tailor the request.
+     * 
+     * TODO: handle errors correctly; log detailed errors
+     */
+    const fetchEvents = async ({ params = {} } = {}) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const resp = await axios.get(eventsURI, {
-                params: {
-                    ...params
-                }
-            });
+            const resp = await axios.get(eventsURI, { params });
 
+            /** 
+             * Artists are in: data._embedded.events._embedded.attractions
+             * Genres are in: data._embedded.events._embedded.attractions.classifications.genre.name
+             * Date is in: data._embedded.events.dates.start.localDate,
+             *             data._embedded.events.dates.start.localTime
+             * Venues are in: data._embedded.events._embedded.venues.name
+             */
             setEvents(resp.data._embedded.events);
         }
         catch (error) {
@@ -41,29 +45,48 @@ function App() {
     };
 
     const fetchFeaturedEvents = async () => {
-        await fetchEvents();
+        // TODO: figure out how to get user's location to pass in param instead of hard coding it
+        await fetchEvents({
+            params: {
+                dmaId: 222,
+                classificationName: "music",
+                size: 1
+            }
+        });
     };
 
     const fetchJustAnnounced = async () => {
-        await fetchEvents({/* INSERT query params for just announced events */});
+        await fetchEvents({
+            params: {
+                classificationName: "music"
+            }
+        });
     }
 
     const fetchThisWeekend = async () => {
-        await fetchEvents({/* INSERT query params for this weekend events */});
+        await fetchEvents({
+            params: {
+                classificationName: "music"
+            }
+        });
     }
 
     return (
         <>
             <Header />
-            <Buttons
-                onFeaturedClick={() => console.log('Featured events clicked')}
-                onJustAnnouncedClick={() => console.log('Just announced events clicked')}
-                onThisWeekendClick={() => console.log('This weekend events clicked')}
-            />
-            <SearchInput onSearch={(value) => console.log('Search', value)}/>
-            <EventDisplay events={events}/>
 
-            {/* Other components will follow here */}
+            <div className="button-container">
+                <Button onClickFunc={fetchFeaturedEvents}
+                        buttonText={'Featured Events'} />
+                <Button onClickFunc={fetchJustAnnounced}
+                        buttonText={'Just Announced'} />
+                <Button onClickFunc={fetchThisWeekend}
+                        buttonText={'This Weekend'} />
+            </div>
+
+            <SearchInput onSearch={(value) => console.log('Search', value)} />
+
+            <EventDisplay events={events} />
         </>
     );
 }

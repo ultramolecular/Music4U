@@ -1,6 +1,7 @@
 /**
  * Searching component
  */
+import Button from "./Button"
 
 const SearchInput = ({ onSearch }) => {
     return (
@@ -11,9 +12,8 @@ const SearchInput = ({ onSearch }) => {
                 placeholder="Search by city"
                 onKeyDown={(e) => e.key === "Enter" && onSearch(e.target.value)}
             />
-            <button className="button" onClick={() => onSearch(document.querySelector('.search-input').value)}>
-                Go!
-            </button>
+            <Button onClickFunc={() => onSearch(document.querySelector('.search-input').value)}
+                    buttonText={"Go!"}/>
         </div>
     );
 };
