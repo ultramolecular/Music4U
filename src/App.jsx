@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 import Header from './components/Header'
 import Buttons from './components/Button'
@@ -9,29 +9,49 @@ import './App.css'
 
 function App() {
     const [events, setEvents] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
     const apiKey = import.meta.env.VITE_API_KEY;
+    const eventsURI = "https://app.ticketmaster.com/discovery/v2/events.json";
 
-    // Event handlers
-    // const handleSearch = (query) => {
-        // TODO: Implement search functionality using Ticketmaster APi
-        // console.log('Search for:', query);
-        // Example: setEvents(searchedEvents);
-    // }
 
-    // ... Other event handlers for buttons
+    const fetchEvents = async ({ params = {}} = {}) => {
+        /** 
+         * TODO: this will be the main fetch function that takes in query
+         * parameters as arguments to tailor the request.
+         */
+        setIsLoading(true);
+        setError(null);
 
-    // TODO: Test API call from here; figure out how to store API keys and secrets using .env
-    useEffect(() =>  {
-        axios.get(`https://app.ticketmaster.com/discovery/v2/events.json?classificationName=music&dmaId=222&size=1&apikey=${apiKey}`)
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }, []);
+        try {
+            const resp = await axios.get(eventsURI, {
+                params: {
+                    ...params
+                }
+            });
 
-    // TODO: Implement button api logic
+            setEvents(resp.data._embedded.events);
+        }
+        catch (error) {
+            setError(error.response ? error.response.data : "An unexpected error occurred...");
+        }
+        finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchFeaturedEvents = async () => {
+        await fetchEvents();
+    };
+
+    const fetchJustAnnounced = async () => {
+        await fetchEvents({/* INSERT query params for just announced events */});
+    }
+
+    const fetchThisWeekend = async () => {
+        await fetchEvents({/* INSERT query params for this weekend events */});
+    }
+
     return (
         <>
             <Header />
