@@ -12,7 +12,8 @@ function App() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const apiKey = import.meta.env.VITE_API_KEY;
-    const eventsURI = "https://app.ticketmaster.com/discovery/v2/events.json";
+    const constParams = `classificationName=music&size=10&apikey=${apiKey}`
+    const eventsURI = `https://app.ticketmaster.com/discovery/v2/events.json?${constParams}`;
 
     /** 
      * This will be the main fetch function that takes in query
@@ -41,10 +42,7 @@ function App() {
         // TODO: figure out how to get user's location to pass in param instead of hard coding it
         await fetchEvents({
             params: {
-                dmaId: 222,
-                classificationName: "music",
-                size: 10,
-                apikey: apiKey
+                dmaId: 222
             }
         });
     };
@@ -52,8 +50,6 @@ function App() {
     const fetchJustAnnounced = async () => {
         await fetchEvents({
             params: {
-                classificationName: "music",
-                apikey: apiKey
             }
         });
     }
@@ -61,8 +57,6 @@ function App() {
     const fetchThisWeekend = async () => {
         await fetchEvents({
             params: {
-                classificationName: "music",
-                apikey: apiKey
             }
         });
     }
