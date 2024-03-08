@@ -30,8 +30,21 @@ function App() {
 
             setEvents(resp.data._embedded.events);
         }
-        catch (error) {
-            setError(error.response ? error.response.data : "An unexpected error occurred...");
+        catch (err) {
+            if (err.response) {
+                // Request made but the server responded with an error
+                setError(err.response.data);
+                console.log('Error data:', error.response.data);
+                console.log('Error status:', error.response.status);
+                console.log('Error headers:', error.response.headers);
+            } else if (err.request) {
+                // Request made but no response from server
+                setError('The request was made but no response was received.')
+                console.log('Error request:', err.request);
+            } else {
+                setError(err.message);
+                console.log('Unexpected error occurred:', error.message);
+            }
         }
         finally {
             setIsLoading(false);
@@ -48,8 +61,17 @@ function App() {
     };
 
     const fetchJustAnnounced = async () => {
+        /* We want events that are having their presale live between today and 2
+            weeks from .replace(/\.\d{3}/, '')now, this approximates 'just announced' criteria for events */
+        const startDate = new Date().toISOString().replace(/\.\d{3}/, '');
+        var endDate = new Date();
+        endDate.setDate(endDate.getDate() + 14);
+        endDate = endDate.toISOString().replace(/\.\d{3}/, '');
+
         await fetchEvents({
             params: {
+                dmaId: 222,
+                preSaleDateTime: `${startDate},${endDate}`
             }
         });
     }
