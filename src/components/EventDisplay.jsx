@@ -12,7 +12,7 @@ const EventDisplay = ({ events }) => {
     return (
         <div className="event-display-container">
             {events.map((event) => {
-                const { name, dates, _embedded } = event;
+                const { name, dates, url, _embedded } = event;
                 const { venues, attractions } = _embedded;
                 const genre = attractions?.[0]?.classifications?.[0]?.genre?.name;
                 const artist = attractions?.map((attraction) => attraction.name).join(', ');
@@ -21,13 +21,13 @@ const EventDisplay = ({ events }) => {
                 const eventTime = dates?.start?.localTime;
 
                 return (
-                    <div key={event.id} className="event-card">
+                    <a href={url} target="_blank" rel="noopener noreferrer" key={event.id} className="event-card">
                         <h3>{name}</h3>
-                        <p>Genre: {genre}</p>
-                        <p>Artist(s): {artist}</p>
-                        <p>Date: {eventDate}</p>
-                        <p>Venue: {venueName}</p>
-                    </div>
+                        <p><b>Genre:</b> {genre}</p>
+                        <p><b>Artist(s):</b> {artist}</p>
+                        <p><b>Date:</b> {eventDate} @ {eventTime}</p>
+                        <p><b>Venue:</b> {venueName}</p>
+                    </a>
                 );
             })}
         </div>
