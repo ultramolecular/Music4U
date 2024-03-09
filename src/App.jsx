@@ -13,10 +13,13 @@ function App() {
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [userCity, setCity] = useState(null);
     const toastId = useRef(null);
     const apiKey = import.meta.env.VITE_API_KEY;
-    const constParams = `classificationName=music&size=10&apikey=${apiKey}`
-    const eventsURI = `https://app.ticketmaster.com/discovery/v2/events.json?${constParams}`;
+    const constEventParams = `classificationName=music&size=10&apikey=${apiKey}`
+    const geoOpts = { enableHighAccuracy: true, maximumAge: 0 };
+    const eventsURI = `https://app.ticketmaster.com/discovery/v2/events.json?${constEventParams}`;
+    const revGeoURI = 'https://api.bigdatacloud.net/data/reverse-geocode-client';
 
     /** 
      * Fetches events from the Ticketmaster API based on given query parameters.
@@ -37,15 +40,7 @@ function App() {
             setEvents(resp.data._embedded.events);
         }
         catch (err) {
-            if (err.response) {
-                // Request made but the server responded with an error
-                setError(err.response);
-            } else if (err.request) {
-                // Request made but no response from server
-                setError(err.request);
-            } else {
-                setError(err.message);
-            }
+            setError(err);
         }
         finally {
             setIsLoading(false);
@@ -62,7 +57,7 @@ function App() {
     const fetchFeaturedEvents = async () => {
         await fetchEvents({
             params: {
-                city: "Austin"
+                city: userCity
             }
         });
     };
@@ -82,7 +77,7 @@ function App() {
 
         await fetchEvents({
             params: {
-                dmaId: 222,
+                city: userCity,
                 publicVisibilityStartDateTime: `${startDate}`
             }
         });
@@ -111,7 +106,7 @@ function App() {
 
         await fetchEvents({
             params: {
-                dmaId: 222,
+                city: userCity,
                 // Start of Friday
                 startDateTime: startDate + "T00:00:00Z",
                 // End of Sunday
@@ -137,16 +132,87 @@ function App() {
         });
     };
 
-    // Using useEffect hook to show the toast when the error state is updated
+    /**
+     * When granted permission by user, fetches and sets the state of the user's city.
+     * 
+     * @param {Object} pos - Object containing raw user location data needed for
+     *                       obtaining the user's city. 
+     * 
+     * @returns {Promise<void>} A promise that resolves when the API call is complete.
+     */
+    const geoSuccess = async (pos) => {
+        const crd = pos.coords;
+
+        try {
+            const resp = await axios.get(revGeoURI, {
+                params: {
+                    latitude: crd.latitude,
+                    longitude: crd.longitude
+                }
+            });
+
+            setCity(resp.data.city);
+        }
+        catch (err) {
+            setError(err)
+        }
+    };
+
+    /**
+     * Sets error state if geolocating the user is denied permission or if
+     * something goes wrong.
+     * 
+     * @param {Object} err - The response error given by geolocation.
+     * 
+     * @returns {void}
+     */
+    const geoErrors = (err) => {
+        setError(err)
+    };
+
+    /**
+     * Using useEffect hook to show the toast when the error state is updated.
+     */
     useEffect(() => {
         if (error && !toast.isActive(toastId.current)) {
-            const msg = error.response
-                ? error.response.data.message
-                : "Couldn't make that request, please try again or another input! 🤠";
+            // Default message if no useful error message is given by failed API call
+            let msg = "Couldn't make that request, please try again or another input! 🤠";
+
+            if (error.response) {
+                msg = error.response.data.message;
+            } else if (error.description) {
+                msg = error.description;
+            }
 
             toastId.current = toast.error(msg);
         }
     }, [error]); // Only re-run the effect if the error state changes
+
+    /**
+     * Using useEffect hook to prompt the user to access their geolocation information.
+     * 
+     * @todo If user denies permission, figure out a way to have a toast to show instructions
+     * or that it is needed to turn on location.
+     */
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.permissions
+            .query({ name: "geolocation" })
+            .then(function (result) {
+            console.log(result);
+
+            if (result.state === "granted") {
+                navigator.geolocation.getCurrentPosition(geoSuccess, geoErrors, geoOpts);
+            } else if (result.state === "prompt") {
+                navigator.geolocation.getCurrentPosition(geoSuccess, geoErrors, geoOpts);
+            } else if (result.state === "denied") {
+                // If denied then show instructions to enable location
+            }
+            });
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+    }, []);
 
 
     return (
@@ -167,7 +233,7 @@ function App() {
 
             <ToastContainer
                 position="bottom-center"
-                autoClose={5000}
+                autoClose={3500}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
