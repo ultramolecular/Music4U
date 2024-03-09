@@ -11,7 +11,7 @@ import './App.css'
 
 function App() {
     const [events, setEvents] = useState([]);
-    const [eventType, setEventType] = useState(null);
+    const [eventType, setEventType] = useState('featured');
     const [userCity, setCity] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
