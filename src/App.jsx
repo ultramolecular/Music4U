@@ -14,7 +14,7 @@ function App() {
     const [eventType, setEventType] = useState('featured');
     const [userCity, setCity] = useState(null);
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const toastId = useRef(null);
     const apiKey = import.meta.env.VITE_API_KEY;
     const constEventParams = `classificationName=music&size=10&apikey=${apiKey}`
@@ -185,13 +185,13 @@ function App() {
             .query({ name: "geolocation" })
             .then(function (result) {
 
-            if (result.state === "granted") {
-                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
-            } else if (result.state === "prompt") {
-                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
-            } else if (result.state === "denied") {
-                setError('Something went wrong with getting your location, please turn it on! 🤠');
-            }
+                if (result.state === "granted") {
+                    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
+                } else if (result.state === "prompt") {
+                    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
+                } else if (result.state === "denied") {
+                    setError('Something went wrong with getting your location, please turn it on! 🤠');
+                }
             });
         } else {
             console.log("Geolocation is not supported by this browser.");
@@ -237,7 +237,7 @@ function App() {
                     fetchJustAnnounced();
                     break;
                 case 'thisWeekend':
-                    fetchJustAnnounced();
+                    fetchThisWeekend();
                     break;
                 default:
                     break;
@@ -262,7 +262,11 @@ function App() {
                 <SearchInput onSearch={fetchSearch} />
             </div>
 
-            <EventDisplay events={events} />
+            {isLoading ? (
+                <LoadingImg />
+            ) : (
+                <EventDisplay events={events} />
+            )}
 
             <ToastContainer
                 position="bottom-center"

@@ -104,6 +104,11 @@
 }
 
 /* Loading Icon styling */
+.loading-icon {
+    width: 200px;
+    height: 200px;
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
