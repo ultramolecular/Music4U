@@ -16,10 +16,13 @@ function App() {
     const eventsURI = `https://app.ticketmaster.com/discovery/v2/events.json?${constParams}`;
 
     /** 
-     * This will be the main fetch function that takes in query
-     * parameters as arguments to tailor the request.
+     * Fetches events from the Ticketmaster API based on given query parameters.
+     * Sets the events to the state if successful, or sets an error state upon failure.
      * 
-     * TODO: handle errors correctly; log detailed errors
+     * @param {Object} options - The options for fetching events.
+     * @param {Object} [options.params={}] - The query parameters for the API call.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the API all is complete.
      */
     const fetchEvents = async ({ params = {} } = {}) => {
         setIsLoading(true);
@@ -51,8 +54,14 @@ function App() {
         }
     };
 
+    /**
+     * Fetches featured events that are local to the user from the Ticketmaster API.
+     * 
+     * @todo Replace hardcoded dmaId with dynamic user location detection.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the API call is complete.
+     */
     const fetchFeaturedEvents = async () => {
-        // TODO: figure out how to get user's location to pass in param instead of hard coding it
         await fetchEvents({
             params: {
                 dmaId: 222
@@ -60,9 +69,14 @@ function App() {
         });
     };
 
+    /**
+     * Fetches local events that have been just announced within the last week from the 
+     * Ticketmaster API.
+     * 
+     * @returns {Promise<void>} A proimse that resolves when the API call is complete.
+     */
     const fetchJustAnnounced = async () => {
-        /* We want events that started being available to the public starting last week,
-            this is a proxy for 'just announced' events */
+        // Get today's date and set it back a week
         var startDate = new Date();
         startDate.setDate(startDate.getDate() - 7)
         // Remove milliseconds from ISO date because TM API doesn't support it
@@ -76,9 +90,35 @@ function App() {
         });
     }
 
+    /**
+     * Fetches local events that are coming up in the following weekend(s) from the
+     * Ticketmaster API.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the API call is complete.
+     */
     const fetchThisWeekend = async () => {
+        // Calculate the start of the weekend (upcoming Friday)
+        const today = new Date();
+        const nextFriday = new Date(today);
+        nextFriday.setDate(today.getDate() + ((7 - today.getDay()) % 7 + 5) % 7);
+
+        // Calculate end of this weekend (upcoming Sunday)
+        const nextSunday = new Date(nextFriday);
+        nextSunday.setDate(nextFriday.getDate() + 2);
+
+        // Format dates to ISO string and remove milliseconds
+        // Only need the date and not specific time so we can use split()
+        const startDate = nextFriday.toISOString().split('T')[0];
+        const endDate = nextSunday.toISOString().split('T')[0];
+
         await fetchEvents({
             params: {
+                dmaId: 222,
+                // Start of Friday
+                startDateTime: startDate + "T00:00:00Z",
+                // End of Sunday
+                endDateTime: endDate + "T23:59:59Z",
+                sort: "date,asc"
             }
         });
     }
