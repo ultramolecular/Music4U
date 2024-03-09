@@ -36,17 +36,18 @@ function App() {
         catch (err) {
             if (err.response) {
                 // Request made but the server responded with an error
-                setError(err.response.data);
-                console.log('Error data:', error.response.data);
-                console.log('Error status:', error.response.status);
-                console.log('Error headers:', error.response.headers);
+                setError(err.response);
+                console.log('Error data:', error.data);
+                console.log('Error status:', error.status);
+                console.log('Error headers:', error.headers);
             } else if (err.request) {
                 // Request made but no response from server
-                setError('The request was made but no response was received.')
-                console.log('Error request:', err.request);
+                setError(err.request);
+                console.log('The request was made but no response was received.\nError request:', 
+                    error);
             } else {
                 setError(err.message);
-                console.log('Unexpected error occurred:', error.message);
+                console.log('Unexpected error occurred:', error);
             }
         }
         finally {
