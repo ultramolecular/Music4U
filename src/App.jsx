@@ -1,16 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Header from './components/Header'
 import Button from './components/Button'
 import SearchInput from './components/SearchInput'
 import EventDisplay from './components/EventDisplay'
 import LoadingImg from './assets/loading.svg?react'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import './App.css'
 
 function App() {
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const toastId = useRef(null);
     const apiKey = import.meta.env.VITE_API_KEY;
     const constParams = `classificationName=music&size=10&apikey=${apiKey}`
     const eventsURI = `https://app.ticketmaster.com/discovery/v2/events.json?${constParams}`;
@@ -37,17 +40,11 @@ function App() {
             if (err.response) {
                 // Request made but the server responded with an error
                 setError(err.response);
-                console.log('Error data:', error.data);
-                console.log('Error status:', error.status);
-                console.log('Error headers:', error.headers);
             } else if (err.request) {
                 // Request made but no response from server
                 setError(err.request);
-                console.log('The request was made but no response was received.\nError request:', 
-                    error);
             } else {
                 setError(err.message);
-                console.log('Unexpected error occurred:', error);
             }
         }
         finally {
@@ -140,21 +137,47 @@ function App() {
         });
     };
 
+    // Using useEffect hook to show the toast when the error state is updated
+    useEffect(() => {
+        if (error && !toast.isActive(toastId.current)) {
+            const msg = error.response
+                ? error.response.data.message
+                : "Couldn't make that request, please try again or another input! 🤠";
+
+            toastId.current = toast.error(msg);
+        }
+    }, [error]); // Only re-run the effect if the error state changes
+
+
     return (
         <>
             <Header />
 
             <div className="button-container">
                 <Button onClickFunc={fetchFeaturedEvents}
-                        buttonText={'Featured Events'} />
+                        buttonText='Featured Events' />
                 <Button onClickFunc={fetchJustAnnounced}
-                        buttonText={'Just Announced'} />
+                        buttonText='Just Announced' />
                 <Button onClickFunc={fetchThisWeekend}
-                        buttonText={'This Weekend'} />
+                        buttonText='This Weekend' />
                 <SearchInput onSearch={fetchSearch} />
             </div>
 
             <EventDisplay events={events} />
+
+            <ToastContainer
+                position="bottom-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                limit={1}
+            />
         </>
     );
 }
