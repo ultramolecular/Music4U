@@ -61,17 +61,17 @@ function App() {
     };
 
     const fetchJustAnnounced = async () => {
-        /* We want events that are having their presale live between today and 2
-            weeks from .replace(/\.\d{3}/, '')now, this approximates 'just announced' criteria for events */
-        const startDate = new Date().toISOString().replace(/\.\d{3}/, '');
-        var endDate = new Date();
-        endDate.setDate(endDate.getDate() + 14);
-        endDate = endDate.toISOString().replace(/\.\d{3}/, '');
+        /* We want events that started being available to the public starting last week,
+            this is a proxy for 'just announced' events */
+        var startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7)
+        // Remove milliseconds from ISO date because TM API doesn't support it
+        startDate = startDate.toISOString().replace(/\.\d{3}/, '');
 
         await fetchEvents({
             params: {
                 dmaId: 222,
-                preSaleDateTime: `${startDate},${endDate}`
+                publicVisibilityStartDateTime: `${startDate}`
             }
         });
     }
