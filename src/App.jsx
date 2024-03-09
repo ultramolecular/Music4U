@@ -50,8 +50,6 @@ function App() {
     /**
      * Fetches featured events that are local to the user from the Ticketmaster API.
      * 
-     * @todo Replace hardcoded dmaId with dynamic user location detection.
-     * 
      * @returns {Promise<void>} A promise that resolves when the API call is complete.
      */
     const fetchFeaturedEvents = async () => {
@@ -166,12 +164,14 @@ function App() {
      * 
      * @returns {void}
      */
-    const geoErrors = (err) => {
+    const geoError = (err) => {
         setError(err)
     };
 
     /**
-     * Using useEffect hook to show the toast when the error state is updated.
+     * Listens for changes to the error state and triggers a toast notification
+     * if an error occurs. The notification will not be shown again if it is already
+     * active, to prevent duplicates.
      */
     useEffect(() => {
         if (error && !toast.isActive(toastId.current)) {
@@ -186,13 +186,13 @@ function App() {
 
             toastId.current = toast.error(msg);
         }
-    }, [error]); // Only re-run the effect if the error state changes
+    }, [error]);
 
     /**
-     * Using useEffect hook to prompt the user to access their geolocation information.
-     * 
-     * @todo If user denies permission, figure out a way to have a toast to show instructions
-     * or that it is needed to turn on location.
+     * Attempts to retrieve the user's geolocation information on component mount.
+     * Executes geoSuccess if perms are granted, geoError if perms are denied and user is
+     * notified with instructions or a request to enable location services.
+     * Geolocation availability is checked and a message is logged if the browser does not support it.
      */
     useEffect(() => {
         if (navigator.geolocation) {
@@ -202,11 +202,11 @@ function App() {
             console.log(result);
 
             if (result.state === "granted") {
-                navigator.geolocation.getCurrentPosition(geoSuccess, geoErrors, geoOpts);
+                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
             } else if (result.state === "prompt") {
-                navigator.geolocation.getCurrentPosition(geoSuccess, geoErrors, geoOpts);
+                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
             } else if (result.state === "denied") {
-                // If denied then show instructions to enable location
+                // TODO: If denied then show instructions to enable location
             }
             });
         } else {
