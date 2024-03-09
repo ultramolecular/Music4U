@@ -38,7 +38,6 @@ function App() {
         try {
             const resp = await axios.get(eventsURI, { params });
 
-            console.log('Fetched events!');
             setEvents(resp.data._embedded.events);
         }
         catch (err) {
@@ -151,8 +150,6 @@ function App() {
                 }
             });
 
-            console.log('User city: ', resp.data.city);
-
             setCity(resp.data.city);
         }
         catch (err) {
@@ -169,7 +166,7 @@ function App() {
      * @returns {void}
      */
     const geoError = (err) => {
-        setError(err)
+        setError('Location must be allowed and turned on for us to get you local events! 🤠');
     };
 
     /**
@@ -185,12 +182,11 @@ function App() {
             .then(function (result) {
 
             if (result.state === "granted") {
-                console.log('Success, we got your coordinates!');
                 navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
             } else if (result.state === "prompt") {
                 navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
             } else if (result.state === "denied") {
-                // TODO: If denied then show instructions to enable location
+                setError('Something went wrong with getting your location, please turn it on! 🤠');
             }
             });
         } else {
@@ -212,6 +208,8 @@ function App() {
                 msg = error.response.data.message;
             } else if (error.description) {
                 msg = error.description;
+            } else if (typeof error === 'string') {
+                msg = error;
             }
 
             toastId.current = toast.error(msg);
