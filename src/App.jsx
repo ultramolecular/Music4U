@@ -11,9 +11,10 @@ import './App.css'
 
 function App() {
     const [events, setEvents] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [eventType, setEventType] = useState(null);
     const [userCity, setCity] = useState(null);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const toastId = useRef(null);
     const apiKey = import.meta.env.VITE_API_KEY;
     const constEventParams = `classificationName=music&size=10&apikey=${apiKey}`
@@ -37,6 +38,7 @@ function App() {
         try {
             const resp = await axios.get(eventsURI, { params });
 
+            console.log('Fetched events!');
             setEvents(resp.data._embedded.events);
         }
         catch (err) {
@@ -149,6 +151,8 @@ function App() {
                 }
             });
 
+            console.log('User city: ', resp.data.city);
+
             setCity(resp.data.city);
         }
         catch (err) {
@@ -167,6 +171,32 @@ function App() {
     const geoError = (err) => {
         setError(err)
     };
+
+    /**
+     * Attempts to retrieve the user's geolocation information on component mount.
+     * Executes geoSuccess if perms are granted, geoError if perms are denied and user is
+     * notified with instructions or a request to enable location services.
+     * Geolocation availability is checked and a message is logged if the browser does not support it.
+     */
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.permissions
+            .query({ name: "geolocation" })
+            .then(function (result) {
+
+            if (result.state === "granted") {
+                console.log('Success, we got your coordinates!');
+                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
+            } else if (result.state === "prompt") {
+                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
+            } else if (result.state === "denied") {
+                // TODO: If denied then show instructions to enable location
+            }
+            });
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+    }, []);
 
     /**
      * Listens for changes to the error state and triggers a toast notification
@@ -189,30 +219,31 @@ function App() {
     }, [error]);
 
     /**
-     * Attempts to retrieve the user's geolocation information on component mount.
-     * Executes geoSuccess if perms are granted, geoError if perms are denied and user is
-     * notified with instructions or a request to enable location services.
-     * Geolocation availability is checked and a message is logged if the browser does not support it.
+     * Listens for changes in userCity and eventType; when both have valid values, it 
+     * triggers the appropriate fetch API call based on the event type selected by the
+     * user. After call is done, event type state is reset to null to prevent duplicate
+     * calls being made unintentionally. Mainly a way to ensure that we have the user's
+     * location before any calls are made (obtaining location can be slow apparently).
      */
     useEffect(() => {
-        if (navigator.geolocation) {
-            navigator.permissions
-            .query({ name: "geolocation" })
-            .then(function (result) {
-            console.log(result);
-
-            if (result.state === "granted") {
-                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
-            } else if (result.state === "prompt") {
-                navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
-            } else if (result.state === "denied") {
-                // TODO: If denied then show instructions to enable location
+        if (userCity && eventType) {
+            switch (eventType) {
+                case 'featured':
+                    fetchFeaturedEvents();
+                    break;
+                case 'justAnnounced':
+                    fetchJustAnnounced();
+                    break;
+                case 'thisWeekend':
+                    fetchJustAnnounced();
+                    break;
+                default:
+                    break;
             }
-            });
-        } else {
-            console.log("Geolocation is not supported by this browser.");
+
+            setEventType(null);
         }
-    }, []);
+    }, [userCity, eventType]);
 
 
     return (
@@ -220,11 +251,11 @@ function App() {
             <Header />
 
             <div className="button-container">
-                <Button onClickFunc={fetchFeaturedEvents}
+                <Button onClickFunc={() => setEventType('featured')}
                         buttonText='Featured Events' />
-                <Button onClickFunc={fetchJustAnnounced}
+                <Button onClickFunc={() => setEventType('justAnnounced')}
                         buttonText='Just Announced' />
-                <Button onClickFunc={fetchThisWeekend}
+                <Button onClickFunc={() => setEventType('thisWeekend')}
                         buttonText='This Weekend' />
                 <SearchInput onSearch={fetchSearch} />
             </div>
