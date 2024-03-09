@@ -65,7 +65,7 @@ function App() {
     const fetchFeaturedEvents = async () => {
         await fetchEvents({
             params: {
-                dmaId: 222
+                city: "Austin"
             }
         });
     };
@@ -89,7 +89,7 @@ function App() {
                 publicVisibilityStartDateTime: `${startDate}`
             }
         });
-    }
+    };
 
     /**
      * Fetches local events that are coming up in the following weekend(s) from the
@@ -122,7 +122,23 @@ function App() {
                 sort: "date,asc"
             }
         });
-    }
+    };
+
+    /**
+     * Fetches the events of a given city as per the user's request from the
+     * Ticketmaster APi.
+     * 
+     * @param {String} cityName - The city requested by user to search.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the API call is complete.
+     */
+    const fetchSearch = async (cityName) => {
+        await fetchEvents({
+            params: {
+                city: cityName
+            }
+        });
+    };
 
     return (
         <>
@@ -135,10 +151,8 @@ function App() {
                         buttonText={'Just Announced'} />
                 <Button onClickFunc={fetchThisWeekend}
                         buttonText={'This Weekend'} />
+                <SearchInput onSearch={fetchSearch} />
             </div>
-
-            {/* NOTE: search is just fetchFeaturedEvents with a specific dma */}
-            <SearchInput onSearch={(value) => console.log('Search', value)} />
 
             <EventDisplay events={events} />
         </>
