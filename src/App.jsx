@@ -166,7 +166,11 @@ function App() {
      * @returns {void}
      */
     const geoError = (err) => {
-        setError('Location must be allowed and turned on for us to get you local events! 🤠');
+        if (err.message === 'User denied geolocation prompt') {
+            setError('Location must be allowed and turned on for us to get you local events! 🤠');
+        } else {
+            setError(`Something went wrong with getting your location: ${err.message}`);
+        }
     };
 
     /**
