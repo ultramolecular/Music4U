@@ -34,13 +34,14 @@ const EventDisplay = ({ events }) => {
     return (
         <div className="event-display-container">
             {events.map((event) => {
-                const { name, dates, url, _embedded } = event;
+                const { name, dates, url, images, _embedded } = event;
                 const { venues, attractions } = _embedded;
                 const genre = attractions?.[0]?.classifications?.[0]?.genre?.name;
                 const artist = attractions?.map((attraction) => attraction.name).join(', ');
                 const venueName = venues?.[0]?.name;
                 const eventDate = dates?.start?.localDate;
                 const eventTime = dates?.start?.localTime;
+                const imgUrl = images[0]?.url;
 
                 return (
                     <a href={url} target="_blank" rel="noopener noreferrer" key={event.id} className="event-card">
@@ -49,6 +50,7 @@ const EventDisplay = ({ events }) => {
                         <p><b>Artist(s):</b> {artist}</p>
                         <p><b>Date:</b> {eventDate} @ {eventTime}</p>
                         <p><b>Venue:</b> {venueName}</p>
+                        <img src={imgUrl} alt={name} style={{ width: "40%", height: "auto" }} />
                     </a>
                 );
             })}
