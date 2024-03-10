@@ -76,7 +76,7 @@ function App() {
      * Fetches local events that have been just announced within the last week from the 
      * Ticketmaster API.
      * 
-     * @returns {Promise<void>} A proimse that resolves when the API call is complete.
+     * @returns {Promise<void>} A promise that resolves when the API call is complete.
      */
     const fetchJustAnnounced = async () => {
         // Get today's date and set it back a week
