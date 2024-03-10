@@ -3,23 +3,23 @@
  *
  * This component takes an array of event objects and displays them as a list of cards.
  * Each card includes details about the event such as its name, genre, artist(s),
- * date, and venue. If there are no events to display, it renders a message indicating
- * that no events are available.
+ * date, venue, and an image that represents the event. If there are no events to
+ * display, it renders a message indicating that no events are available.
  *
  * Props:
  * - events: Array of event objects. Each event object must include:
- *    - id: Unique identifier for the event (string).
  *    - name: Name of the event (string).
  *    - dates: Object containing start date and time of the event.
  *    - url: URL for event details (string).
+ *    - images: Array of event images, each with a URL.
  *    - _embedded: Object containing venue and attraction details.
  *
  * Example of an event object:
  * {
- *   id: "1",
  *   name: "Concert ABC",
  *   dates: { start: { localDate: "2024-01-01", localTime: "20:00" } },
  *   url: "https://example.com/event/1",
+ *   images: [ { url: "https://s1.ticktm.en/dam/a/063/eventImg.jpg" } ]
  *   _embedded: { venues: [{ name: "Venue XYZ" }],
  *                attractions: [{ name: "Artist ABC", 
  *                      classifications: [{ genre: { name: "Pop" } }] }] }
