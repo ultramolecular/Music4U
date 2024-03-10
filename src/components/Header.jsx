@@ -14,10 +14,15 @@
  * <Header />
  */
 
+import GuitarIcon from '../assets/guitar.svg'
+import RockHandIcon from '../assets/rockHand.svg'
+
 const Header = () => {
     return (
         <header className="header">
+            <img src={GuitarIcon} alt="Guitar" className='header-icon' />
             <span>Music</span><span className="four">4</span><span>U</span>
+            <img src={RockHandIcon} alt='Rock hand' className='header-icon' />
         </header>
     );
 };

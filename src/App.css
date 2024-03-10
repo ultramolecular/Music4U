@@ -12,11 +12,20 @@
 
 /* Header stylings */
 .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    font-size: 48px;
+    font-size: 75px;
     font-weight: bold;
     margin: 20px 0;
     color: #9933FF;
+}
+
+.header-icon {
+    margin: 0 25px;
+    height: 70px;
+    width: auto;
 }
 
 .header .four {
