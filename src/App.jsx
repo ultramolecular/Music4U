@@ -38,10 +38,21 @@ function App() {
         try {
             const resp = await axios.get(eventsURI, { params });
 
-            setEvents(resp.data._embedded.events);
+            // Check if response has the successful _embedded object with events
+            if (resp.data._embedded) {
+                setEvents(resp.data._embedded.events);
+            } else if (userCity === params.city) {
+                // If no _embedded object then no events exist for user city
+                throw new Error(`No events in ${params.city} currently, sorry! 😓`); 
+            } else {
+                // If not the user city then it was a user search query
+                throw new Error(`No events for "${params.city}", please try again.`);
+            }
         }
         catch (err) {
             setError(err);
+            // Set events to null so no events are displayed after a failed request
+            setEvents(null);
         }
         finally {
             setIsLoading(false);
@@ -153,7 +164,7 @@ function App() {
             setCity(resp.data.city);
         }
         catch (err) {
-            setError(err)
+            setError(`Something went wrong with getting your location: ${err.message}`);
         }
     };
 
@@ -205,18 +216,7 @@ function App() {
      */
     useEffect(() => {
         if (error && !toast.isActive(toastId.current)) {
-            // Default message if no useful error message is given by failed API call
-            let msg = "Couldn't make that request, please try again or another input! 🤠";
-
-            if (error.response) {
-                msg = error.response.data.message;
-            } else if (error.description) {
-                msg = error.description;
-            } else if (typeof error === 'string') {
-                msg = error;
-            }
-
-            toastId.current = toast.error(msg);
+            toastId.current = toast.error(error.message);
         }
     }, [error]);
 
