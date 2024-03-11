@@ -35,8 +35,8 @@
  * @returns {String} The date in Month, Day Year format string.
  */
 const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 /**
@@ -47,10 +47,15 @@ const formatDate = (dateString) => {
  * @returns {String} Time in HH:MM (am/pm) format string.
  */
 const formatTime = (timeString) => {
-  const [hour, minute] = timeString.split(':');
-  const date = new Date();
-  date.setHours(hour, minute);
-  return date.toLocaleTimeString(undefined, { timeStyle: 'short' });
+    // Handles undefined times, like 2+ day events or if time isn't specified
+    if (!timeString) {
+        return 'N/A';
+    }
+
+    const [hour, minute] = timeString.split(':');
+    const date = new Date();
+    date.setHours(hour, minute);
+    return date.toLocaleTimeString(undefined, { timeStyle: 'short' });
 };
 
 const EventDisplay = ({ events }) => {
