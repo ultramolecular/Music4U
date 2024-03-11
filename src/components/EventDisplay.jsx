@@ -26,6 +26,33 @@
  * }
  */
 
+
+/**
+ * Formats the given YYYY-MM-DD date format to Month, Day Year format.
+ * 
+ * @param {String} dateString - Date in YYYY-MM-DD format.
+ * 
+ * @returns {String} The date in Month, Day Year format string.
+ */
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+/**
+ * Formats the given HH:MM:SS 24-hour string into HH:MM (am/pm) format.
+ * 
+ * @param {String} timeString - Time in HH:MM:SS format.
+ * 
+ * @returns {String} Time in HH:MM (am/pm) format string.
+ */
+const formatTime = (timeString) => {
+  const [hour, minute] = timeString.split(':');
+  const date = new Date();
+  date.setHours(hour, minute);
+  return date.toLocaleTimeString(undefined, { timeStyle: 'short' });
+};
+
 const EventDisplay = ({ events }) => {
     if (!events || events.length === 0) {
         return <div>No events to display.</div>
@@ -39,8 +66,8 @@ const EventDisplay = ({ events }) => {
                 const genre = attractions?.[0]?.classifications?.[0]?.genre?.name;
                 const artist = attractions?.map((attraction) => attraction.name).join(', ');
                 const venueName = venues?.[0]?.name;
-                const eventDate = dates?.start?.localDate;
-                const eventTime = dates?.start?.localTime;
+                const eventDate = formatDate(dates?.start?.localDate);
+                const eventTime = formatTime(dates?.start?.localTime);
                 const imgUrl = images[0]?.url;
 
                 return (
