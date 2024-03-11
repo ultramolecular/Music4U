@@ -164,7 +164,7 @@ function App() {
             setCity(resp.data.city);
         }
         catch (err) {
-            setError(`Something went wrong with getting your location: ${err.message}`);
+            setError({ message: `Something went wrong with getting your location: ${err.message}` });
         }
     };
 
@@ -178,9 +178,9 @@ function App() {
      */
     const geoError = (err) => {
         if (err.message === 'User denied geolocation prompt') {
-            setError('Location must be allowed and turned on for us to get you local events! 🤠');
+            setError({ message: 'Location must be allowed and turned on for us to get you local events! 🤠' });
         } else {
-            setError(`Something went wrong with getting your location: ${err.message}`);
+            setError({ message: `Something went wrong with getting your location: ${err.message}` });
         }
     };
 
@@ -201,7 +201,7 @@ function App() {
                 } else if (result.state === "prompt") {
                     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOpts);
                 } else if (result.state === "denied") {
-                    setError('Something went wrong with getting your location, please turn it on! 🤠');
+                    setError({ message: 'Something went wrong with getting your location, please turn it on! 🤠' });
                 }
             });
         } else {
