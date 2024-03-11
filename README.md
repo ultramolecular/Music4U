@@ -5,11 +5,12 @@ Music4U lets you view and visit the pages of:
 - **featured** events in your area
 - events in your area that were **just announced** within the last week
 - events in your area that are coming up in the **next weekend**
-- events of a **city** of your liking through a **search** bar
+- events in a **city** of your liking through a **search** bar
 
 > [!IMPORTANT]
 > Please allow location access as Music4U needs it to automatically load in events in your area.
-> If there are no events that Ticketmaster sells tickets for, then no events will be displayed.
+> If there are no events in your area that Ticketmaster sells tickets for, then no events will
+> be displayed.
 
 ## Getting Started
 
@@ -44,8 +45,13 @@ your default user app that lists your API (Consumer) key.
 ## Developer Notes
 
 - Development may or may not continue after March 2024.
-- Find a way to not make unnecessary API calls if user clicks the same button more than once.
-- Would like for event images to be on the right half of the card, haven't figured it out yet.
-- Currently, only city names are viable, cannot specify with state code. Finding a way to implement this
-would be useful for common name cities e.g. Springfield, Portland, Arlington, San Jose.
-- Open up a new issue if you encounter a bug!
+
+- Currently, there are a couple TODOs and issues for future development:
+
+    1. Find a way to not make unnecessary API calls if user clicks the same button more than once.
+    2. Would like for event images to be on the right half of the card, haven't figured it out yet.
+    3. Currently, only city names are viable, cannot specify with state code; finding a way to implement this
+    would be useful for common name cities e.g. Springfield, Portland, Arlington, San Jose.
+    4. Only 10 events per request are retrieved currently, can increase it and make pages for user to surf through.
+
+- If you'd like, open up a new issue for either one or if a bug is found!
