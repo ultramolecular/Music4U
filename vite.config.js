@@ -4,5 +4,5 @@ import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
   plugins: [react(), svgr()],
-  base: '/cs378-p4/'
+  base: '/Music4U/'
 })
